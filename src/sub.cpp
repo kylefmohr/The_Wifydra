@@ -1,7 +1,13 @@
-
-
+#include <Arduino.h>
 #include <esp_now.h>
 #include <WiFi.h>
+
+#ifdef BOARD_HAS_NEOPIXEL
+#include <Adafruit_NeoPixel.h>
+#define PIX_PIN 14
+#define NUM_PIX 64
+Adafruit_NeoPixel pix = Adafruit_NeoPixel(NUM_PIX, PIX_PIN, NEO_GRB + NEO_KHZ800);
+#endif
 
 // Keep as all zeroes so we do a broadcast
 uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -28,11 +34,35 @@ typedef struct struct_message {
   int boardID;
 } struct_message;
 
-
+int boardID = -1;
 //**********
 //**********
-//change the boardID for every unit you flash, this also sets the channel that the board will scan on
+//This gets set by `create_all_images.py`
+#ifdef BOARD1
 int boardID = 1;
+#elif BOARD2
+int boardID = 2;
+#elif BOARD3
+int boardID = 3;
+#elif BOARD4
+int boardID = 4;
+#elif BOARD5
+int boardID = 5;
+#elif BOARD6
+int boardID = 6;
+#elif BOARD7
+int boardID = 7;
+#elif BOARD8
+int boardID = 8;
+#elif BOARD9
+int boardID = 9;
+#elif BOARD10
+int boardID = 10;
+#elif BOARD11
+int boardID = 11;
+#elif BOARD12
+int boardID = 12;
+#endif
 
 
 String AP;
@@ -44,6 +74,160 @@ struct_message myData;
 
 unsigned long lastTime = 0;
 unsigned long timerDelay = 200;  // send readings timer
+
+void play_animation()
+{
+  #ifdef BOARD_HAS_NEOPIXEL
+  pix.setPixelColor(59, 0x0000FF);
+  pix.setPixelColor(60, 0x0000FF);
+  pix.show();
+  delay(50);
+  // pix.setPixelColor(59, 0x000000);
+  // pix.setPixelColor(60, 0x000000);
+  // Next up, light pins 58, 51, 52, and 61
+  pix.setPixelColor(58, 0x0000FF);
+  pix.setPixelColor(51, 0x0000FF);
+  pix.setPixelColor(52, 0x0000FF);
+  pix.setPixelColor(61, 0x0000FF);
+  pix.show();
+  delay(50);
+  // pix.setPixelColor(58, 0x000000);
+  // pix.setPixelColor(51, 0x000000);
+  // pix.setPixelColor(52, 0x000000);
+  // pix.setPixelColor(61, 0x000000);
+  // Next up, light 57, 50, 43, 44, 53, 62
+  pix.setPixelColor(57, 0x0000FF);
+  pix.setPixelColor(50, 0x0000FF);
+  pix.setPixelColor(43, 0x0000FF);
+  pix.setPixelColor(44, 0x0000FF);
+  pix.setPixelColor(53, 0x0000FF);
+  pix.setPixelColor(62, 0x0000FF);
+  pix.show();
+  delay(50);
+  // pix.setPixelColor(57, 0x000000);
+  // pix.setPixelColor(50, 0x000000);
+  // pix.setPixelColor(43, 0x000000);
+  // pix.setPixelColor(44, 0x000000);
+  // pix.setPixelColor(53, 0x000000);
+  // pix.setPixelColor(62, 0x000000);
+  // Next up, light 56, 49, 42, 35, 36, 45, 54, 63
+  pix.setPixelColor(56, 0x0000FF);
+  pix.setPixelColor(49, 0x0000FF);
+  pix.setPixelColor(42, 0x0000FF);
+  pix.setPixelColor(35, 0x0000FF);
+  pix.setPixelColor(36, 0x0000FF);
+  pix.setPixelColor(45, 0x0000FF);
+  pix.setPixelColor(54, 0x0000FF);
+  pix.setPixelColor(63, 0x0000FF);
+  pix.show();
+  delay(50);
+  // pix.setPixelColor(56, 0x000000);
+  // pix.setPixelColor(49, 0x000000);
+  // pix.setPixelColor(42, 0x000000);
+  // pix.setPixelColor(35, 0x000000);
+  // pix.setPixelColor(36, 0x000000);
+  // pix.setPixelColor(45, 0x000000);
+  // pix.setPixelColor(54, 0x000000);
+  // pix.setPixelColor(63, 0x000000);
+  // Next up, light 48, 41, 34, 27, 28, 37, 46, 55
+  pix.setPixelColor(48, 0x0000FF);
+  pix.setPixelColor(41, 0x0000FF);
+  pix.setPixelColor(34, 0x0000FF);
+  pix.setPixelColor(27, 0x0000FF);
+  pix.setPixelColor(28, 0x0000FF);
+  pix.setPixelColor(37, 0x0000FF);
+  pix.setPixelColor(46, 0x0000FF);
+  pix.setPixelColor(55, 0x0000FF);
+  pix.show();
+  delay(50);
+  // pix.setPixelColor(48, 0x000000);
+  // pix.setPixelColor(41, 0x000000);
+  // pix.setPixelColor(34, 0x000000);
+  // pix.setPixelColor(27, 0x000000);
+  // pix.setPixelColor(28, 0x000000);
+  // pix.setPixelColor(37, 0x000000);
+  // pix.setPixelColor(46, 0x000000);
+  // pix.setPixelColor(55, 0x000000);
+  // Next up, light 40, 33, 26, 19, 20, 29, 38, 47
+  pix.setPixelColor(40, 0x0000FF);
+  pix.setPixelColor(33, 0x0000FF);
+  pix.setPixelColor(26, 0x0000FF);
+  pix.setPixelColor(19, 0x0000FF);
+  pix.setPixelColor(20, 0x0000FF);
+  pix.setPixelColor(29, 0x0000FF);
+  pix.setPixelColor(38, 0x0000FF);
+  pix.setPixelColor(47, 0x0000FF);
+  pix.show();
+  delay(50);
+  // pix.setPixelColor(40, 0x000000);
+  // pix.setPixelColor(33, 0x000000);
+  // pix.setPixelColor(26, 0x000000);
+  // pix.setPixelColor(19, 0x000000);
+  // pix.setPixelColor(20, 0x000000);
+  // pix.setPixelColor(29, 0x000000);
+  // pix.setPixelColor(38, 0x000000);
+  // pix.setPixelColor(47, 0x000000);
+  // Next up, light 32, 25, 18, 11, 12, 21, 30, 39
+  pix.setPixelColor(32, 0x0000FF);
+  pix.setPixelColor(25, 0x0000FF);
+  pix.setPixelColor(18, 0x0000FF);
+  pix.setPixelColor(11, 0x0000FF);
+  pix.setPixelColor(12, 0x0000FF);
+  pix.setPixelColor(21, 0x0000FF);
+  pix.setPixelColor(30, 0x0000FF);
+  pix.setPixelColor(39, 0x0000FF);
+  pix.show();
+  delay(50);
+  // pix.setPixelColor(32, 0x000000);
+  // pix.setPixelColor(25, 0x000000);
+  // pix.setPixelColor(18, 0x000000);
+  // pix.setPixelColor(11, 0x000000);
+  // pix.setPixelColor(12, 0x000000);
+  // pix.setPixelColor(21, 0x000000);
+  // pix.setPixelColor(30, 0x000000);
+  // pix.setPixelColor(39, 0x000000);
+  // Next up, light 24, 17, 10, 3, 4, 13, 22, 31
+  pix.setPixelColor(24, 0x0000FF);
+  pix.setPixelColor(17, 0x0000FF);
+  pix.setPixelColor(10, 0x0000FF);
+  pix.setPixelColor(3, 0x0000FF);
+  pix.setPixelColor(4, 0x0000FF);
+  pix.setPixelColor(13, 0x0000FF);
+  pix.setPixelColor(22, 0x0000FF);
+  pix.setPixelColor(31, 0x0000FF);
+  pix.show();
+  delay(50);
+  // pix.setPixelColor(24, 0x000000);
+  // pix.setPixelColor(17, 0x000000);
+  // pix.setPixelColor(10, 0x000000);
+  // pix.setPixelColor(3, 0x000000);
+  // pix.setPixelColor(4, 0x000000);
+  // pix.setPixelColor(13, 0x000000);
+  // pix.setPixelColor(22, 0x000000);
+  // pix.setPixelColor(31, 0x000000);
+  // Next up, light 16, 9, 2, 5, 14, 23
+  pix.setPixelColor(16, 0x0000FF);
+  pix.setPixelColor(9, 0x0000FF);
+  pix.setPixelColor(2, 0x0000FF);
+  pix.setPixelColor(5, 0x0000FF);
+  pix.setPixelColor(14, 0x0000FF);
+  pix.setPixelColor(23, 0x0000FF);
+  pix.show();
+  delay(50);
+  pix.clear();
+  pix.show();
+  #endif
+}
+
+boolean mac_cmp(struct mac_addr addr1, struct mac_addr addr2) {
+  //Return true if 2 mac_addr structs are equal.
+  for (int y = 0; y < 6; y++) {
+    if (addr1.bytes[y] != addr2.bytes[y]) {
+      return false;
+    }
+  }
+  return true;
+}
 
 // Callback when data is sent
 void OnDataSent(const uint8_t* mac_addr, esp_now_send_status_t status) {
@@ -91,15 +275,7 @@ void print_mac(struct mac_addr mac) {
   }
 }
 
-boolean mac_cmp(struct mac_addr addr1, struct mac_addr addr2) {
-  //Return true if 2 mac_addr structs are equal.
-  for (int y = 0; y < 6; y++) {
-    if (addr1.bytes[y] != addr2.bytes[y]) {
-      return false;
-    }
-  }
-  return true;
-}
+
 
 String security_int_to_string(int security_type) {
   //Provide a security type int from WiFi.encryptionType(i) to convert it to a String which Wigle CSV expects.
@@ -150,7 +326,11 @@ void setup() {
   // Init Serial Monitor
   Serial.begin(115200);
 
-  pinMode(2, OUTPUT);  //setup built in led
+  #ifdef BOARD_HAS_NEOPIXEL
+  pix.begin();
+  pix.clear();
+  pix.setBrightness(25);
+  #endif
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
 
@@ -182,12 +362,13 @@ void loop() {
   char Buf[50];
   char bufBSSID[64];
   char BufEnc[50];
+
   if ((millis() - lastTime) > timerDelay) {
     // Set values to send
 
     //myData.b = random(1,20);
     //myData.c = 1.2;
-    int n = WiFi.scanNetworks(false, true, false, 500, boardID);
+    int n = WiFi.scanNetworks(false, true, false, 300, boardID);
     if (n == 0) {
       Serial.println("No networks found");
       Serial.println("No networks found");
@@ -257,9 +438,12 @@ void loop() {
         Serial.println(myData.boardID);
         save_mac(WiFi.BSSID(i));
         esp_now_send(broadcastAddress, (uint8_t*)&myData, sizeof(myData));
-        //digitalWrite(2, LOW);
-        delay(200);
-        //digitalWrite(2, HIGH);
+        #ifdef BOARD_HAS_NEOPIXEL
+        play_animation();
+        #endif
+        // //digitalWrite(2, LOW);
+        // delay(200);
+        // //digitalWrite(2, HIGH);
       }
 
 
